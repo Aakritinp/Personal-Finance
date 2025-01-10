@@ -4,7 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Income from "./pages/Income";
 import Expenses from "./pages/Expenses";
 import SavingsGoals from "./pages/SavingsGoals";
-import Header from "./pages/Header";
+import Header from "./component/Header";
 
 const App: React.FC = () => {
   return (

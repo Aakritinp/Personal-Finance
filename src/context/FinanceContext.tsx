@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, Dispatch } from "react";
+import React, { createContext, useReducer, ReactNode, Dispatch } from "react";
 
 type Income = {
   id: number;
@@ -29,10 +29,7 @@ const initialState: FinanceState = {
 const FinanceContext = createContext<{
   state: FinanceState;
   dispatch: Dispatch<FinanceAction>;
-}>({
-  state: initialState,
-  dispatch: () => undefined,
-});
+}>(null!);
 
 const financeReducer = (
   state: FinanceState,
@@ -48,7 +45,7 @@ const financeReducer = (
   }
 };
 
-const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({
+export const FinanceProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(financeReducer, initialState);
@@ -60,4 +57,4 @@ const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export { FinanceContext, FinanceProvider };
+export { FinanceContext };

@@ -1,26 +1,45 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { FinanceContext } from "../context/FinanceContext";
 
-const Expense: React.FC = () => {
+const Expenses: React.FC = () => {
+  const { dispatch } = useContext(FinanceContext);
+  const [category, setCategory] = useState("");
+  const [amount, setAmount] = useState<number>(0);
+
+  const handleAddExpense = () => {
+    dispatch({
+      type: "ADD_EXPENSE",
+      payload: { id: Date.now(), category, amount },
+    });
+    setCategory("");
+    setAmount(0);
+  };
+
   return (
-    <header className="bg-blue-500 text-white p-4 flex justify-between">
-      <h1 className="text-xl font-bold">Finance Tracker</h1>
-      <nav>
-        <Link to="/" className="mx-2">
-          Dashboard
-        </Link>
-        <Link to="/income" className="mx-2">
-          Income
-        </Link>
-        <Link to="/expenses" className="mx-2">
-          Expenses
-        </Link>
-        <Link to="/savings-goals" className="mx-2">
-          Savings Goals
-        </Link>
-      </nav>
-    </header>
+    <div className="p-4">
+      <h2 className="text-2xl font-bold">Expenses</h2>
+      <input
+        type="text"
+        placeholder="Category"
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+        className="border p-2 my-2 w-full"
+      />
+      <input
+        type="number"
+        placeholder="Amount"
+        value={amount}
+        onChange={(e) => setAmount(Number(e.target.value))}
+        className="border p-2 my-2 w-full"
+      />
+      <button
+        onClick={handleAddExpense}
+        className="bg-red-500 text-white p-2 rounded"
+      >
+        Add Expense
+      </button>
+    </div>
   );
 };
 
-export default Expense;
+export default Expenses;
