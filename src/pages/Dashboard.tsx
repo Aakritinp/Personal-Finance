@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { FinanceContext } from "../context/FinanceContext";
-import { Bar } from "react-chartjs-2";
+// import { Bar } from "react-chartjs-2";
 
 const Dashboard: React.FC = () => {
   const { state } = useContext(FinanceContext);
@@ -14,16 +14,16 @@ const Dashboard: React.FC = () => {
     0
   );
 
-  const data = {
-    labels: ["Income", "Expenses"],
-    datasets: [
-      {
-        label: "Amount",
-        data: [totalIncome, totalExpenses],
-        backgroundColor: ["#4caf50", "#f44336"],
-      },
-    ],
-  };
+  // const data = {
+  //   labels: ["Income", "Expenses"],
+  //   datasets: [
+  //     {
+  //       label: "Amount",
+  //       data: [totalIncome, totalExpenses],
+  //       backgroundColor: ["#4caf50", "#f44336"],
+  //     },
+  //   ],
+  // };
 
   return (
     <div className="p-4">
@@ -44,6 +44,9 @@ const Dashboard: React.FC = () => {
           </p>
         </div>
       </div>
+      {/* <div className="mt-8">
+        <Bar data={data} />
+      </div> */}
     </div>
   );
 };
