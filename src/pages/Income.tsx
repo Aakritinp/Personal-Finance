@@ -1,43 +1,50 @@
-import React, { useContext, useState } from "react";
-import { FinanceContext } from "../context/FinanceContext";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addIncome } from "../store/financeSlice";
 
 const Income: React.FC = () => {
-  const { dispatch } = useContext(FinanceContext);
   const [source, setSource] = useState("");
   const [amount, setAmount] = useState<number>(0);
+  const dispatch = useDispatch();
 
   const handleAddIncome = () => {
-    dispatch({
-      type: "ADD_INCOME",
-      payload: { id: Date.now(), source, amount },
-    });
-    setSource("");
-    setAmount(0);
+    if (source && amount > 0) {
+      dispatch(addIncome({ id: Date.now(), amount, category: source }));
+      setSource("");
+      setAmount(0);
+    }
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold">Income</h2>
-      <input
-        type="text"
-        placeholder="Source"
-        value={source}
-        onChange={(e) => setSource(e.target.value)}
-        className="border p-2 my-2 w-full"
-      />
-      <input
-        type="number"
-        placeholder="Amount"
-        value={amount}
-        onChange={(e) => setAmount(Number(e.target.value))}
-        className="border p-2 my-2 w-full"
-      />
-      <button
-        onClick={handleAddIncome}
-        className="bg-blue-500 text-white p-2 rounded"
-      >
-        Add Income
-      </button>
+    <div>
+      <h2 className="text-3xl font-bold mb-6 text-blue-600">Add Income</h2>
+      <div className="bg-white shadow-md p-6 rounded-lg">
+        <div className="mb-4">
+          <label className="block text-gray-700 font-medium mb-2">Source</label>
+          <input
+            type="text"
+            placeholder="Enter income source"
+            value={source}
+            onChange={(e) => setSource(e.target.value)}
+            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-blue-300"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-medium mb-2">Amount</label>
+          <input
+            placeholder="Enter amount"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-blue-300"
+          />
+        </div>
+        <button
+          onClick={handleAddIncome}
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+        >
+          Add Income
+        </button>
+      </div>
     </div>
   );
 };
