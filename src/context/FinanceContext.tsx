@@ -1,6 +1,11 @@
-import React, { createContext, useReducer, ReactNode, Dispatch } from "react";
+import React, {
+  createContext,
+  useReducer,
+  ReactNode,
+  Dispatch,
+  useEffect,
+} from "react";
 
-// Define types for income, expenses, and savings goals
 type Income = {
   id: number;
   amount: number;
@@ -14,10 +19,10 @@ type Expense = {
 };
 
 type SavingsGoal = {
-  id: number;
-  name: string;
-  target: number;
   progress: number;
+  id: number;
+  goal: string;
+  amount: number;
 };
 
 type FinanceState = {
@@ -30,25 +35,19 @@ type FinanceAction =
   | { type: "ADD_INCOME"; payload: Income }
   | { type: "ADD_EXPENSE"; payload: Expense }
   | { type: "ADD_SAVINGS_GOAL"; payload: SavingsGoal }
-  | {
-      type: "UPDATE_SAVINGS_PROGRESS";
-      payload: { id: number; progress: number };
-    };
+  | { type: "SET_INITIAL_STATE"; payload: FinanceState };
 
-// Initial state
 const initialState: FinanceState = {
   income: [],
   expenses: [],
   savingsGoals: [],
 };
 
-// Create context
 const FinanceContext = createContext<{
   state: FinanceState;
   dispatch: Dispatch<FinanceAction>;
 }>(null!);
 
-// Reducer function
 const financeReducer = (
   state: FinanceState,
   action: FinanceAction
@@ -63,25 +62,28 @@ const financeReducer = (
         ...state,
         savingsGoals: [...state.savingsGoals, action.payload],
       };
-    case "UPDATE_SAVINGS_PROGRESS":
-      return {
-        ...state,
-        savingsGoals: state.savingsGoals.map((goal) =>
-          goal.id === action.payload.id
-            ? { ...goal, progress: action.payload.progress }
-            : goal
-        ),
-      };
+    case "SET_INITIAL_STATE":
+      return action.payload;
     default:
       return state;
   }
 };
 
-// Provider component
 export const FinanceProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(financeReducer, initialState);
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("financeData");
+    if (storedData) {
+      dispatch({ type: "SET_INITIAL_STATE", payload: JSON.parse(storedData) });
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("financeData", JSON.stringify(state));
+  }, [state]);
 
   return (
     <FinanceContext.Provider value={{ state, dispatch }}>

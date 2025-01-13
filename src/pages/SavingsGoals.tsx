@@ -5,37 +5,58 @@ const SavingsGoals: React.FC = () => {
   const { state, dispatch } = useContext(FinanceContext); // Access state and dispatch
   const [goal, setGoal] = useState("");
   const [amount, setAmount] = useState<number>(0);
+  const [type, setType] = useState<"income" | "expense" | "goal">("income");
 
-  // Calculate total savings
-  const totalSavings =
-    state.income.reduce(
-      (sum: number, inc: { amount: number }) => sum + inc.amount,
-      0
-    ) -
-    state.expenses.reduce(
-      (sum: number, exp: { amount: number }) => sum + exp.amount,
-      0
-    );
+  // Calculate total income, expenses, and savings
+  const totalIncome = state.income.reduce((sum, inc) => sum + inc.amount, 0);
+  const totalExpenses = state.expenses.reduce(
+    (sum, exp) => sum + exp.amount,
+    0
+  );
+  const totalSavings = totalIncome - totalExpenses;
 
-  // Handle setting a new savings goal
-  const handleSaveGoal = () => {
-    if (goal && amount > 0) {
+  // Handle form submission
+  const handleAdd = () => {
+    if (amount <= 0) {
+      alert("Please enter a valid amount!");
+      return;
+    }
+
+    if (type === "income") {
+      // Add income
+      const newIncome = { id: Date.now(), amount, source: goal || "Salary" };
+      dispatch({ type: "ADD_INCOME", payload: newIncome });
+      alert(`Added income: $${amount}`);
+    } else if (type === "expense") {
+      // Add expense
+      const newExpense = {
+        id: Date.now(),
+        amount,
+        category: goal || "General",
+      };
+      dispatch({ type: "ADD_EXPENSE", payload: newExpense });
+      alert(`Added expense: $${amount}`);
+    } else if (type === "goal") {
+      // Add savings goal
+      if (!goal) {
+        alert("Please provide a goal name!");
+        return;
+      }
       const newGoal = {
         id: Date.now(),
         name: goal,
         target: amount,
-        progress: 0,
+        progress: totalSavings,
+        goal: goal,
+        amount: amount,
       };
-
-      // Dispatch the new goal to the context state
       dispatch({ type: "ADD_SAVINGS_GOAL", payload: newGoal });
-
-      // Reset input fields
-      setGoal("");
-      setAmount(0);
-    } else {
-      alert("Please provide a valid goal name and amount!");
+      alert(`Savings goal "${goal}" set for $${amount}`);
     }
+
+    // Reset fields
+    setGoal("");
+    setAmount(0);
   };
 
   return (
@@ -43,73 +64,76 @@ const SavingsGoals: React.FC = () => {
       <h2 className="text-2xl font-bold mb-4">Savings Goals</h2>
       <p className="mb-4">Your current savings: ${totalSavings.toFixed(2)}</p>
 
-      {/* Goal input */}
-      <input
-        type="text"
-        placeholder="Goal Name"
-        value={goal}
-        onChange={(e) => setGoal(e.target.value)}
-        className="border p-2 my-2 w-full rounded"
-      />
+      {/* Input fields */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Name or Category"
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+          className="border p-2 mb-2 w-full rounded"
+        />
+        <input
+          placeholder="Amount"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+          className="border p-2 mb-2 w-full rounded"
+        />
+        <select
+          value={type}
+          onChange={(e) =>
+            setType(e.target.value as "income" | "expense" | "goal")
+          }
+          className="border p-2 mb-2 w-full rounded"
+        >
+          <option value="income">Add Income</option>
+          <option value="expense">Add Expense</option>
+          <option value="goal">Set Savings Goal</option>
+        </select>
+      </div>
 
-      {/* Amount input */}
-      <input
-        type="number"
-        placeholder="Goal Amount"
-        value={amount}
-        onChange={(e) => setAmount(Number(e.target.value))}
-        className="border p-2 my-2 w-full rounded"
-      />
-
-      {/* Save Goal button */}
+      {/* Add button */}
       <button
-        onClick={handleSaveGoal}
+        onClick={handleAdd}
         className="bg-green-500 text-white p-2 rounded w-full hover:bg-green-600"
       >
-        Set Goal
+        Add{" "}
+        {type === "income" ? "Income" : type === "expense" ? "Expense" : "Goal"}
       </button>
 
-      {/* Display existing goals */}
+      {/* Existing Goals */}
       <div className="mt-6">
-        <h3 className="text-xl font-semibold mb-2">Your Goals</h3>
+        <h3 className="text-xl font-semibold mb-4">Your Savings Goals</h3>
         {state.savingsGoals.length > 0 ? (
-          state.savingsGoals.map(
-            (
-              goal: {
-                id: number;
-                name: string;
-                target: number;
-                progress: number;
-              },
-              index: number
-            ) => (
-              <div
-                key={index}
-                className="border p-4 rounded my-2 bg-gray-100 flex justify-between"
-              >
-                <div>
-                  <h4 className="font-bold text-lg">{goal.name}</h4>
-                  <p>Target: ${goal.target.toFixed(2)}</p>
-                  <p>Progress: ${goal.progress.toFixed(2)}</p>
-                </div>
-                <div>
-                  <p
-                    className={`text-sm font-semibold ${
-                      goal.progress >= goal.target
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {goal.progress >= goal.target
-                      ? "Goal Achieved!"
-                      : "In Progress"}
-                  </p>
-                </div>
+          state.savingsGoals.map((goal) => (
+            <div
+              key={goal.id}
+              className="border p-4 rounded my-2 bg-gray-100 flex justify-between items-center"
+            >
+              <div>
+                <h4 className="font-bold text-lg">{goal.goal}</h4>
+                <p>Target: ${goal.amount.toFixed(2)}</p>
+                <p>Progress: ${goal.progress.toFixed(2)}</p>
               </div>
-            )
-          )
+              <div>
+                <p
+                  className={`text-sm font-semibold ${
+                    goal.progress >= goal.amount
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {goal.progress >= goal.amount
+                    ? "Goal Achieved!"
+                    : "In Progress"}
+                </p>
+              </div>
+            </div>
+          ))
         ) : (
-          <p>No savings goals yet. Start by setting one!</p>
+          <p className="text-gray-600">
+            No savings goals yet. Start by setting one!
+          </p>
         )}
       </div>
     </div>
