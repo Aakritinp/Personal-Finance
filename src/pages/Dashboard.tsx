@@ -162,7 +162,7 @@ const Dashboard: React.FC = () => {
                 key={index}
                 className="border p-4 rounded my-2 bg-gray-100 shadow-sm"
               >
-                <h3 className="font-bold text-lg">{goal.name}</h3>
+                <h3 className="font-bold text-lg">{goal.title}</h3>
                 <p>Target: ${goal.target.toFixed(2)}</p>
                 <p>Progress: ${goal.progress.toFixed(2)}</p>
                 <div className="w-full bg-gray-300 h-2 rounded">
