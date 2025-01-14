@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 const Sidebar: React.FC = () => {
   const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
     `block py-3 px-4 rounded-md text-white text-lg transition-colors ${
-      isActive ? "bg-blue-700" : "hover:bg-blue-500"
+      isActive ? "<bg-blue-800></bg-blue-8>00" : "hover:bg-blue-500"
     }`;
 
   return (

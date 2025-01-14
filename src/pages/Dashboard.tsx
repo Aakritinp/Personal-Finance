@@ -146,11 +146,7 @@ const Dashboard: React.FC = () => {
                     {trans.type}
                   </td>
                   <td className="border p-2">
-                    {trans.type === "Income" && "source" in trans
-                      ? trans.source
-                      : "category" in trans
-                      ? trans.category
-                      : ""}
+                    {trans.type === "Income" ? trans.source : trans.category}
                   </td>
                   <td className="border p-2">${trans.amount.toFixed(2)}</td>
                 </tr>
@@ -162,7 +158,30 @@ const Dashboard: React.FC = () => {
           <h2 className="text-xl font-bold text-gray-700 mb-4">
             Savings Goals
           </h2>
-          <p>Coming Soon!</p>
+          {state.savingsGoals.length > 0 ? (
+            state.savingsGoals.map((goal, index) => (
+              <div key={index} className="border p-4 rounded my-2 bg-gray-100">
+                <h3 className="font-bold text-lg">{goal.name}</h3>
+                <p>Target: ${goal.target.toFixed(2)}</p>
+                <p>Progress: ${goal.progress.toFixed(2)}</p>
+                <div className="w-full bg-gray-300 h-2 rounded">
+                  <div
+                    className="bg-blue-500 h-2 rounded"
+                    style={{
+                      width: `${(goal.progress / goal.target) * 100}%`,
+                    }}
+                  ></div>
+                </div>
+                <p className="text-sm mt-2 text-right">
+                  {(goal.progress / goal.target) * 100 >= 100
+                    ? "Goal Achieved!"
+                    : `Progress: ${(goal.progress / goal.target) * 100}%`}
+                </p>
+              </div>
+            ))
+          ) : (
+            <p>No savings goals set yet. Add one to track progress!</p>
+          )}
         </div>
       </div>
     </div>

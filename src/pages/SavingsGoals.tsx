@@ -24,7 +24,13 @@ const SavingsGoals: React.FC = () => {
 
     if (type === "income") {
       // Add income
-      const newIncome = { id: Date.now(), amount, source: goal || "Salary" };
+      const newIncome = {
+        id: Date.now(),
+        amount,
+        source: goal || "Salary",
+        date: new Date().toLocaleDateString(),
+        paymentMethod: "Cash", // Add appropriate payment method
+      };
       dispatch({ type: "ADD_INCOME", payload: newIncome });
       alert(`Added income: $${amount}`);
     } else if (type === "expense") {

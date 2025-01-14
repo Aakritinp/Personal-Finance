@@ -7,6 +7,8 @@ import React, {
 } from "react";
 
 type Income = {
+  paymentMethod: ReactNode;
+  date: ReactNode;
   id: number;
   amount: number;
   source: string;
