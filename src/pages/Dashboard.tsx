@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
   const recentTransactions = [
     ...state.income.map((inc) => ({ ...inc, type: "Income" })),
     ...state.expenses.map((exp) => ({ ...exp, type: "Expense" })),
-  ].slice(-5); // Get the last 5 transactions
+  ].slice(-5);
 
   const expenseCategories = state.expenses.reduce((acc, expense) => {
     acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
@@ -73,31 +73,29 @@ const Dashboard: React.FC = () => {
     <div className="mt-8 space-y-6">
       {/* Top Row: Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white shadow-md p-4 rounded-lg text-center">
-          <h3 className="text-lg font-semibold text-gray-600">Total Income</h3>
-          <p className="text-2xl font-bold text-green-600">
+        <div className="bg-gradient-to-br from-green-100 to-green-50 shadow-md p-4 rounded-lg text-center hover:scale-105 transition transform">
+          <h3 className="text-lg font-semibold text-green-600">Total Income</h3>
+          <p className="text-3xl font-bold text-green-800">
             ${totalIncome.toFixed(2)}
           </p>
         </div>
-        <div className="bg-white shadow-md p-4 rounded-lg text-center">
-          <h3 className="text-lg font-semibold text-gray-600">
-            Total Expenses
-          </h3>
-          <p className="text-2xl font-bold text-red-600">
+        <div className="bg-gradient-to-br from-red-100 to-red-50 shadow-md p-4 rounded-lg text-center hover:scale-105 transition transform">
+          <h3 className="text-lg font-semibold text-red-600">Total Expenses</h3>
+          <p className="text-3xl font-bold text-red-800">
             ${totalExpenses.toFixed(2)}
           </p>
         </div>
-        <div className="bg-white shadow-md p-4 rounded-lg text-center">
-          <h3 className="text-lg font-semibold text-gray-600">Net Savings</h3>
-          <p className="text-2xl font-bold text-blue-600">
+        <div className="bg-gradient-to-br from-blue-100 to-blue-50 shadow-md p-4 rounded-lg text-center hover:scale-105 transition transform">
+          <h3 className="text-lg font-semibold text-blue-600">Net Savings</h3>
+          <p className="text-3xl font-bold text-blue-800">
             ${netSavings.toFixed(2)}
           </p>
         </div>
-        <div className="bg-white shadow-md p-4 rounded-lg text-center">
-          <h3 className="text-lg font-semibold text-gray-600">
+        <div className="bg-gradient-to-br from-purple-100 to-purple-50 shadow-md p-4 rounded-lg text-center hover:scale-105 transition transform">
+          <h3 className="text-lg font-semibold text-purple-600">
             Savings Percentage
           </h3>
-          <p className="text-2xl font-bold text-purple-600">
+          <p className="text-3xl font-bold text-purple-800">
             {savingsPercentage}%
           </p>
         </div>
@@ -105,13 +103,13 @@ const Dashboard: React.FC = () => {
 
       {/* Middle Row: Graphs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white shadow-md p-6 rounded-lg">
+        <div className="bg-white shadow-md p-6 rounded-lg hover:shadow-lg transition">
           <h2 className="text-xl font-bold text-gray-700 mb-4">
             Financial Overview
           </h2>
           <Bar data={barData} />
         </div>
-        <div className="bg-white shadow-md p-6 rounded-lg">
+        <div className="bg-white shadow-md p-6 rounded-lg hover:shadow-lg transition">
           <h2 className="text-xl font-bold text-gray-700 mb-4">
             Expense Breakdown
           </h2>
@@ -121,26 +119,26 @@ const Dashboard: React.FC = () => {
 
       {/* Bottom Row: Recent Transactions & Goals */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white shadow-md p-6 rounded-lg">
+        <div className="bg-white shadow-md p-6 rounded-lg hover:shadow-lg transition">
           <h2 className="text-xl font-bold text-gray-700 mb-4">
             Recent Transactions
           </h2>
           <table className="table-auto w-full border-collapse border border-gray-200">
             <thead>
               <tr className="bg-gray-100">
-                <th className="border p-2">Type</th>
-                <th className="border p-2">Category/Source</th>
-                <th className="border p-2">Amount</th>
+                <th className="border p-2 text-left">Type</th>
+                <th className="border p-2 text-left">Category/Source</th>
+                <th className="border p-2 text-left">Amount</th>
               </tr>
             </thead>
             <tbody>
               {recentTransactions.map((trans, index) => (
-                <tr key={index}>
+                <tr key={index} className="hover:bg-gray-50">
                   <td
                     className={`border p-2 ${
                       trans.type === "Income"
-                        ? "text-green-500"
-                        : "text-red-500"
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
                     {trans.type}
@@ -154,13 +152,16 @@ const Dashboard: React.FC = () => {
             </tbody>
           </table>
         </div>
-        <div className="bg-white shadow-md p-6 rounded-lg">
+        <div className="bg-white shadow-md p-6 rounded-lg hover:shadow-lg transition">
           <h2 className="text-xl font-bold text-gray-700 mb-4">
             Savings Goals
           </h2>
           {state.savingsGoals.length > 0 ? (
             state.savingsGoals.map((goal, index) => (
-              <div key={index} className="border p-4 rounded my-2 bg-gray-100">
+              <div
+                key={index}
+                className="border p-4 rounded my-2 bg-gray-100 shadow-sm"
+              >
                 <h3 className="font-bold text-lg">{goal.name}</h3>
                 <p>Target: ${goal.target.toFixed(2)}</p>
                 <p>Progress: ${goal.progress.toFixed(2)}</p>
@@ -180,7 +181,9 @@ const Dashboard: React.FC = () => {
               </div>
             ))
           ) : (
-            <p>No savings goals set yet. Add one to track progress!</p>
+            <p className="text-gray-600">
+              No savings goals set yet. Add one to track progress!
+            </p>
           )}
         </div>
       </div>

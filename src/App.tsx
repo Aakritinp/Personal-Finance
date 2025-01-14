@@ -10,9 +10,9 @@ import { FinanceProvider } from "./context/FinanceContext";
 const App: React.FC = () => {
   return (
     <FinanceProvider>
-      <div className="flex">
+      <div className="flex min-h-screen">
         <Sidebar />
-        <main className="ml-64 p-6 w-full">
+        <main className="flex-1 bg-gray-50 p-6">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/income" element={<Income />} />

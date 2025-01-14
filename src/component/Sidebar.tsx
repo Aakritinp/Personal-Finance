@@ -1,30 +1,57 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+import {
+  HomeIcon,
+  CashIcon,
+  CreditCardIcon,
+  ChartBarIcon,
+} from "@heroicons/react/outline";
 
 const Sidebar: React.FC = () => {
-  const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
-    `block py-3 px-4 rounded-md text-white text-lg transition-colors ${
-      isActive ? "<bg-blue-800></bg-blue-8>00" : "hover:bg-blue-500"
-    }`;
-
   return (
-    <aside className="w-64 h-screen bg-gradient-to-b from-blue-600 to-blue-800 text-white fixed">
-      <div className="p-6 text-3xl font-bold border-b border-blue-700">
+    <aside className="h-screen w-64 bg-gray-800 text-white flex flex-col">
+      {/* Application Title */}
+      <h2 className="text-2xl font-bold text-center py-4 border-b border-gray-700">
         Finance Tracker
-      </div>
-      <nav className="mt-6 space-y-2">
-        <NavLink to="/" className={navLinkClasses}>
-          Dashboard
-        </NavLink>
-        <NavLink to="/income" className={navLinkClasses}>
-          Income
-        </NavLink>
-        <NavLink to="/expenses" className={navLinkClasses}>
-          Expenses
-        </NavLink>
-        <NavLink to="/savings-goals" className={navLinkClasses}>
-          Savings Goals
-        </NavLink>
+      </h2>
+
+      {/* Navigation Links */}
+      <nav className="mt-4 flex flex-col">
+        {/* Dashboard Link */}
+        <Link
+          to="/"
+          className="flex items-center px-6 py-3 hover:bg-gray-700 transition-all"
+        >
+          <HomeIcon className="h-6 w-6 text-blue-400 mr-3" />
+          <span>Dashboard</span>
+        </Link>
+
+        {/* Income Link */}
+        <Link
+          to="/income"
+          className="flex items-center px-6 py-3 hover:bg-gray-700 transition-all"
+        >
+          <CashIcon className="h-6 w-6 text-green-400 mr-3" />
+          <span>Income</span>
+        </Link>
+
+        {/* Expenses Link */}
+        <Link
+          to="/expenses"
+          className="flex items-center px-6 py-3 hover:bg-gray-700 transition-all"
+        >
+          <CreditCardIcon className="h-6 w-6 text-red-400 mr-3" />
+          <span>Expenses</span>
+        </Link>
+
+        {/* Savings Goals Link */}
+        <Link
+          to="/savings"
+          className="flex items-center px-6 py-3 hover:bg-gray-700 transition-all"
+        >
+          <ChartBarIcon className="h-6 w-6 text-yellow-400 mr-3" />
+          <span>Savings Goals</span>
+        </Link>
       </nav>
     </aside>
   );
