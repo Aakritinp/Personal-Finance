@@ -39,6 +39,8 @@ const SavingsGoals: React.FC = () => {
         id: Date.now(),
         amount,
         category: goal || "General",
+        date: new Date().toLocaleDateString(),
+        paymentMethod: "Cash", // Add appropriate payment method
       };
       dispatch({ type: "ADD_EXPENSE", payload: newExpense });
       alert(`Added expense: $${amount}`);
@@ -50,6 +52,7 @@ const SavingsGoals: React.FC = () => {
       }
       const newGoal = {
         id: Date.now(),
+        title: goal,
         name: goal,
         target: amount,
         progress: totalSavings,

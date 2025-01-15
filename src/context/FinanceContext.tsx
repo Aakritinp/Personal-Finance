@@ -26,6 +26,7 @@ type Expense = {
 };
 
 type SavingsGoal = {
+  title: ReactNode;
   name: ReactNode;
   target: number;
   id: number;

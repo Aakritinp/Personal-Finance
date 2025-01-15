@@ -11,6 +11,7 @@ import {
 } from "chart.js";
 import { FinanceContext } from "../context/FinanceContext";
 
+// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,6 +24,7 @@ ChartJS.register(
 const Dashboard: React.FC = () => {
   const { state } = useContext(FinanceContext);
 
+  // Calculate financial summaries
   const totalIncome = state.income.reduce((sum, inc) => sum + inc.amount, 0);
   const totalExpenses = state.expenses.reduce(
     (sum, exp) => sum + exp.amount,
@@ -32,16 +34,19 @@ const Dashboard: React.FC = () => {
   const savingsPercentage =
     totalIncome > 0 ? ((netSavings / totalIncome) * 100).toFixed(2) : "0";
 
+  // Extract recent transactions
   const recentTransactions = [
     ...state.income.map((inc) => ({ ...inc, type: "Income" })),
     ...state.expenses.map((exp) => ({ ...exp, type: "Expense" })),
   ].slice(-5);
 
+  // Calculate expense category distribution
   const expenseCategories = state.expenses.reduce((acc, expense) => {
     acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
     return acc;
   }, {} as Record<string, number>);
 
+  // Bar chart data
   const barData = {
     labels: ["Income", "Expenses", "Savings"],
     datasets: [
@@ -53,6 +58,7 @@ const Dashboard: React.FC = () => {
     ],
   };
 
+  // Pie chart data
   const pieData = {
     labels: Object.keys(expenseCategories),
     datasets: [
@@ -72,33 +78,41 @@ const Dashboard: React.FC = () => {
   return (
     <div className="mt-8 space-y-6">
       {/* Top Row: Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-green-100 to-green-50 shadow-md p-4 rounded-lg text-center hover:scale-105 transition transform">
-          <h3 className="text-lg font-semibold text-green-600">Total Income</h3>
-          <p className="text-3xl font-bold text-green-800">
-            ${totalIncome.toFixed(2)}
-          </p>
-        </div>
-        <div className="bg-gradient-to-br from-red-100 to-red-50 shadow-md p-4 rounded-lg text-center hover:scale-105 transition transform">
-          <h3 className="text-lg font-semibold text-red-600">Total Expenses</h3>
-          <p className="text-3xl font-bold text-red-800">
-            ${totalExpenses.toFixed(2)}
-          </p>
-        </div>
-        <div className="bg-gradient-to-br from-blue-100 to-blue-50 shadow-md p-4 rounded-lg text-center hover:scale-105 transition transform">
-          <h3 className="text-lg font-semibold text-blue-600">Net Savings</h3>
-          <p className="text-3xl font-bold text-blue-800">
-            ${netSavings.toFixed(2)}
-          </p>
-        </div>
-        <div className="bg-gradient-to-br from-purple-100 to-purple-50 shadow-md p-4 rounded-lg text-center hover:scale-105 transition transform">
-          <h3 className="text-lg font-semibold text-purple-600">
-            Savings Percentage
-          </h3>
-          <p className="text-3xl font-bold text-purple-800">
-            {savingsPercentage}%
-          </p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          {
+            label: "Total Income",
+            value: `$${totalIncome.toFixed(2)}`,
+            color: "green",
+          },
+          {
+            label: "Total Expenses",
+            value: `$${totalExpenses.toFixed(2)}`,
+            color: "red",
+          },
+          {
+            label: "Net Savings",
+            value: `$${netSavings.toFixed(2)}`,
+            color: "blue",
+          },
+          {
+            label: "Savings Percentage",
+            value: `${savingsPercentage}%`,
+            color: "purple",
+          },
+        ].map((item, index) => (
+          <div
+            key={index}
+            className={`bg-gradient-to-br from-${item.color}-100 to-${item.color}-50 shadow-md p-4 rounded-lg text-center hover:scale-105 transition transform`}
+          >
+            <h3 className={`text-lg font-semibold text-${item.color}-600`}>
+              {item.label}
+            </h3>
+            <p className={`text-3xl font-bold text-${item.color}-800`}>
+              {item.value}
+            </p>
+          </div>
+        ))}
       </div>
 
       {/* Middle Row: Graphs */}
@@ -119,6 +133,7 @@ const Dashboard: React.FC = () => {
 
       {/* Bottom Row: Recent Transactions & Goals */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Recent Transactions */}
         <div className="bg-white shadow-md p-6 rounded-lg hover:shadow-lg transition">
           <h2 className="text-xl font-bold text-gray-700 mb-4">
             Recent Transactions
@@ -144,7 +159,7 @@ const Dashboard: React.FC = () => {
                     {trans.type}
                   </td>
                   <td className="border p-2">
-                    {trans.type === "Income" ? trans.source : trans.category}
+                    {"source" in trans ? trans.source : trans.category}
                   </td>
                   <td className="border p-2">${trans.amount.toFixed(2)}</td>
                 </tr>
@@ -152,6 +167,8 @@ const Dashboard: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Savings Goals */}
         <div className="bg-white shadow-md p-6 rounded-lg hover:shadow-lg transition">
           <h2 className="text-xl font-bold text-gray-700 mb-4">
             Savings Goals
